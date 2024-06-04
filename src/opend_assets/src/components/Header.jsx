@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-// import logo from "../../assets/logo.png";
 import logo from "../../assets/shop-window.svg";
-import { BrowserRouter, Link, Switch, Route } from "react-router-dom";
+import { BrowserRouter, Link, Switch, Route, NavLink } from "react-router-dom";
 import homeImage from "../../assets/home-img.png";
 import Minter from "./Minter";
 import Gallery from "./Gallery";
@@ -68,7 +67,7 @@ function Header() {
           </Link>
             <div className="header-vertical-9"></div>
 
-            <ul className="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+            {/* <ul className="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
             <Link to="/gallery">
               <li><a href="#" className="nav-link px-2 text-dark">Gallery</a></li>
             </Link>
@@ -81,6 +80,21 @@ function Header() {
             <Link to="/create">
               <li><a href="#" className="nav-link px-2 text-dark">Create</a></li>
             </Link>
+            </ul> */}
+
+            <ul className="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+              <li>
+                <NavLink to="/gallery" className="nav-link px-2 text-dark" activeClassName="box-with-line">Gallery</NavLink>
+              </li>
+              <li>
+                <NavLink to="/shop" className="nav-link px-2 text-dark" activeClassName="box-with-line">Shop</NavLink>
+              </li>
+              <li>
+                <NavLink to="/lent" className="nav-link px-2 text-dark" activeClassName="box-with-line">Lent</NavLink>
+              </li>
+              <li>
+                <NavLink to="/create" className="nav-link px-2 text-dark" activeClassName="box-with-line">Create</NavLink>
+              </li>
             </ul>
 
             <form className="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">

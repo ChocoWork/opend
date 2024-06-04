@@ -1334,6 +1334,9 @@ label[data-shrink="false"]
   border-color: #DEE2E6 !important;
   box-shadow: none !important;
 }
+.box-with-line {
+  border-bottom: 1px solid #212529 !important;
+}
 
 @keyframes lds-ellipsis1 {
   0% {
