@@ -109,6 +109,8 @@ dfx canister call opend mint '(vec {137; 80; 78; 71; 13; 10; 26; 10; 0; 0; 0; 13
 ```
 dfx canister call opend listItem '(principal "<REPLACE WITH NFT CANISTER ID>", 2)'
 dfx canister call opend listItem '(principal "st75y-vaaaa-aaaaa-aaalq-cai", 2)'
+dfx canister call opend listItem '(principal "wmio3-kqaaa-aaaaa-aaasq-cai", 2)'
+
 ```
 
 3. Get OpenD canister ID:
@@ -122,6 +124,7 @@ dfx canister id opend
 ```
 dfx canister call <REPLACE WITH NFT CANISTER ID> transferOwnership '(principal "<REPLACE WITH OPEND CANISTER ID>", true)'
 dfx canister call st75y-vaaaa-aaaaa-aaalq-cai transferOwnership '(principal "ryjl3-tyaaa-aaaaa-aaaba-cai", true)'
+dfx canister call wmio3-kqaaa-aaaaa-aaasq-cai transferOwnership '(principal "ryjl3-tyaaa-aaaaa-aaaba-cai", true)'
 ```
 
 # Conneting to the Token Canister

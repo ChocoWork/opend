@@ -14,7 +14,8 @@ header {
 }
 
 a {
-  color: #5f64b5 !important;
+  /* color: #5f64b5 !important; */
+  color: #fff !important;
   text-decoration: none !important;
 }
 
@@ -955,7 +956,7 @@ label[data-shrink="false"]
   background-color: rgba(55, 114, 255, 0.1);
 }
 .makeStyles-form-109 .form-OutlinedInput-input {
-  color: white;
+  color: #777e90;
   border-color: #353945;
 }
 .makeStyles-form-109 .form-OutlinedInput-root {

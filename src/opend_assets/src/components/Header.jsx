@@ -18,11 +18,13 @@ function Header() {
     const userNFTIds = await opend.getOwnedNFTs(CURRENT_USER_ID);
     // console.log("end getNFTs");
     // console.log(userNFTIds);
-    setOwnedGallary(<Gallery title="Gallery" ids={userNFTIds} role="gallery" />);
+    // setOwnedGallary(<Gallery title="Gallery" ids={userNFTIds} role="gallery" />);
+    setOwnedGallary(<Gallery ids={userNFTIds} role="gallery" />);
 
     const listedNFTIds = await opend.getListedNFTs();
     console.log(listedNFTIds);
-    setListingGallery(<Gallery title="Shop" ids={listedNFTIds} role="shop" />);
+    // setListingGallery(<Gallery title="Shop" ids={listedNFTIds} role="shop" />);
+    setListingGallery(<Gallery ids={listedNFTIds} role="shop" />);
   }
 
   // このページが読み込まれたときにIDに紐づくNFTのリストを読み込む
@@ -104,8 +106,11 @@ function Header() {
 
             <div className="text-end">
               <button type="button" className="btn me-2 btn-bg-gray">Login</button>
-              {/* <button type="button" className="btn btn-dark">Register</button> */}
-              <button type="button" className="btn btn-bg-black">Register</button>
+              <button type="button" className="btn btn-secondary">
+                <a href="https://identity.internetcomputer.org/" target="_blank" rel="noopener noreferrer">Register</a>
+                {/* Register */}
+              </button>
+              {/* <button type="button" className="btn btn-bg-black">Register</button> */}
             </div>
           </div>
         </div>

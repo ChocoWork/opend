@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import logo from "../../assets/logo.png";
 import { Actor, HttpAgent } from "@dfinity/agent";
 import { idlFactory } from "../../../declarations/nft";
+import { idlFactory as tokenIdlFactory} from "../../../declarations/token";
 import { Principal } from "@dfinity/principal";
 import Button from "./Button";
 import { opend } from "../../../declarations/opend";
@@ -19,10 +20,10 @@ function Item(props) {
   const [blur, setBlur] = useState();
   const [sellStatus, setSellStatus] = useState();
   const [priceLabel, setPriceLabel] = useState();
+  const [shoudDisplay, setShoudDisplay] = useState(true);
 
   // NFTキャニスターIDをPrincipal IDに変換する
   // const id = Principal.fromText(props.id);
-
   const id = props.id;
 
   // NFTが格納されている箇所に対してHTTPリクエストを行い、情報を取得する
@@ -119,11 +120,31 @@ function Item(props) {
   }
 
   async function handleBuy(params) {
-    
+    console.log("Buy was triggered");
+    setLoaderHidden(false);
+    // Tokenアクターにアクセスするための処理
+    const tokenActor = await Actor.createActor(tokenIdlFactory, {
+      agent,
+      canisterId: Principal.fromText("wqmuk-5qaaa-aaaaa-aaaqq-cai"),
+    });
+
+    // NFTのPrincipalIDから売却者のIDとNFTの価格を取得する
+    const sellerId = await opend.getOriginalOwner(props.id);
+    const itemPrice = await opend.getListedNFTsPrice(props.id);
+
+    const result = await tokenActor.transfer(sellerId, itemPrice);
+    if (result == "Success") {
+      // 代金を購入者から出品者に送金し、NFTのオーナーを変更する
+      // TODO : CURRENT_USER_IDをログインしているユーザーに変更する
+      const transferResult = await opend.completePurchase(props.id, sellerId, CURRENT_USER_ID);
+      console.log("purchase: " + transferResult);
+      setShoudDisplay(false); // 購入が完了したら、購入画面のアイテムを非表示にする
+    }
+    setLoaderHidden(true);
   }
 
   return (
-    <div className="disGrid-item">
+    <div style={{display: shoudDisplay ? "inline" : "none"}} className="disGrid-item">
       <div className="disPaper-root disCard-root makeStyles-root-17 disPaper-elevation1 disPaper-rounded">
         <img
           className="disCardMedia-root makeStyles-image-19 disCardMedia-media disCardMedia-img"

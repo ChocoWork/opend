@@ -53,7 +53,7 @@ actor OpenD {
         return newPrincipal;
     };
 
-    // ユーザーが現在所有しているNFTをリスト化する
+    // ユーザーが現在所有しているNFTリストに、NFTを追加する
     private func addToOwnershipMap(owner: Principal, nftId: Principal) {
         // `owner`が所有するNFTのリストを取得します。
         var ownedNFTs : List.List<Principal> = switch (mapOfOwners.get(owner)){
@@ -148,5 +148,45 @@ actor OpenD {
         };
 
         return listing.itemPrice;
+    };
+
+    // オーナーを変更する
+    // id[Principal] : NFTのID
+    // ownerId[Principal] : NFTの現在の所有者のID
+    // id[Principal] : NFTの送信先のID
+    public func completePurchase(id: Principal, ownerId: Principal, newOwnerId: Principal) : async Text {
+        // NFTのキャニスターIDに紐づくNFTを取得する
+        var purchasedNFT : NFTActorClass.NFT = switch(mapOfNFTs.get(id)) {
+            case null return "NFT does not exist";
+            case (?result) result;
+        };
+
+        // 新しいオーナーに所有権を変更する
+        let transferResult = await purchasedNFT.transferOwnership(newOwnerId);
+
+        if (transferResult == "Success"){
+            // 売却するNFTのリストから削除する
+            mapOfListings.delete(id);
+
+            // 販売元のオーナーのIDに紐づくNFTのPrincipalIDのリストを取得する
+            var ownedNFTs : List.List<Principal> = switch(mapOfOwners.get(ownerId)) {
+                case null List.nil<Principal>();
+                case (?result) result;
+            };
+            
+            // 引数1のリストに対して、引数2でtrueを返すものだけをリストに残す
+            // つまり、所有者が所有しているNFTのリスト（ownedNFTs）から特定のNFT（id）を削除している
+            ownedNFTs := List.filter(ownedNFTs, func (listItemId: Principal) : Bool {
+                // NFTのIDと一致するかを確認する
+                return listItemId != id;
+            });
+
+            // ユーザーが所持しているNFTのリストに、購入したNFTを追加する
+            addToOwnershipMap(newOwnerId, id);
+            return "Success";
+        } else {
+            return transferResult;
+            // return "Error";
+        }
     };
 };

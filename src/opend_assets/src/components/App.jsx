@@ -2,6 +2,7 @@ import React from "react";
 import Header from "./Header";
 import Footer from "./Footer";
 import "bootstrap/dist/css/bootstrap.min.css";
+import 'bootstrap/dist/js/bootstrap.bundle.min';
 // import homeImage from "../../assets/home-img.png";
 import Item from "./Item";
 import Minter from "./Minter";
@@ -13,9 +14,6 @@ function App() {
   return (
     <div className="App">
       <Header />
-      {/* <Minter /> */}
-      {/* <Item id={NFTID} /> */}
-      {/* <img className="bottom-space" src={homeImage} /> */}
       <Footer />
     </div>
   );
