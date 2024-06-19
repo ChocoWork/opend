@@ -28,9 +28,9 @@ function Gallery(props) {
         </button>
         <ul className="dropdown-menu">
           <li><button className="dropdown-item" onClick={handleSelect}>All</button></li>
-          <li><button className="dropdown-item" onClick={handleSelect}>On Sale</button></li>
-          <li><button className="dropdown-item" onClick={handleSelect}>On Loan</button></li>
-          <li><button className="dropdown-item" onClick={handleSelect}>Borrowed</button></li>
+          <li><button className="dropdown-item" onClick={handleSelect}>Listing</button></li>
+          <li><button className="dropdown-item" onClick={handleSelect}>Lendig</button></li>
+          <li><button className="dropdown-item" onClick={handleSelect}>Borrowing</button></li>
         </ul>
       </div>
       )
@@ -54,7 +54,7 @@ function Gallery(props) {
   return (
     <div className="gallery-view">
       {/* <h3 className="makeStyles-title-99 Typography-h3">{props.title}</h3> */}
-      <div className="btn-group" role="group" aria-label="Basic radio toggle button group">
+      <div className="btn-group category-btn-mergin" role="group" aria-label="Basic radio toggle button group">
         <input
           type="radio"
           className="btn-check"

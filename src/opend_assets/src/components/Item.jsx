@@ -71,6 +71,7 @@ function Item(props) {
         setOwner("OpenD");
         setBlur({filter: "blur(4px)"}); // 画像にぼかしを入れる
         setSellStatus("Listed");
+        // TODO : 貸出中と借りているかどうかを表示させる
       } else {
         setButton(<Button handleOnclick={handleSell} text={"Sell"} />);
       }
@@ -145,10 +146,9 @@ function Item(props) {
 
   return (
     <div style={{display: shoudDisplay ? "inline" : "none"}} className="disGrid-item">
-      <div className="disPaper-root disCard-root makeStyles-root-17 disPaper-elevation1 disPaper-rounded">
+      {/* <div className="disPaper-root disCard-root makeStyles-root-17 disPaper-elevation1 disPaper-rounded card-style">
         <img
-          className="disCardMedia-root makeStyles-image-19 disCardMedia-media disCardMedia-img"
-          // src={logo}
+          className="disCardMedia-root makeStyles-image-19 disCardMedia-media disCardMedia-img card-style"
           src={image}
           style={blur}
         />
@@ -157,21 +157,60 @@ function Item(props) {
           <div></div>
           <div></div>
           <div></div>
-        </div>
-        <div className="disCardContent-root">
+        </div> */}
+        {/* <div className="disCardContent-root">
           {priceLabel}
           <h2 className="disTypography-root makeStyles-bodyText-24 disTypography-h5 disTypography-gutterBottom">
-            {/* CryptoDunks #312<span className="purple-text"></span> */}
             {name}<span className="purple-text"> {sellStatus}</span>
           </h2>
           <p className="disTypography-root makeStyles-bodyText-24 disTypography-body2 disTypography-colorTextSecondary">
-            {/* Owner: sdfsdf-erwerv-sdf */}
             Owner: {owner}
           </p>
           {priceInput}
           {button}
+        </div> */}
+        {/* <div className="disCardContent-root">
+          <h2 className="disTypography-root makeStyles-bodyText-24 disTypography-h5 disTypography-gutterBottom">
+            {name}<span className="purple-text"> {sellStatus}</span>
+          </h2>
+          <p className="disTypography-root makeStyles-bodyText-24 disTypography-body2 disTypography-colorTextSecondary">
+            Owner: {owner}
+          </p>
+          {priceLabel}
+          {priceInput}
+          {button}
+        </div>
+      </div> */}
+
+      <div className="card card-style">
+        <img
+          className="disCardMedia-root makeStyles-image-19 disCardMedia-media disCardMedia-img"
+          src={image}
+          style={blur}
+          />
+        <div className="card-body">
+          {/* TODO : ローダーはボタンと一体化させた方がよさそう */}
+          <div hidden={loaderHidden} className="lds-ellipsis">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+          <p className="disTypography-root makeStyles-bodyText-24 disTypography-h5 disTypography-gutterBottom">
+            {name}<span className="purple-text"> {sellStatus}</span>
+          </p>
+          {priceLabel}
+          <p className="disTypography-root makeStyles-bodyText-24 disTypography-body2 disTypography-colorTextSecondary">
+            {/* TODO : クリエイターと企業名をOwnerの部分に入れる */}
+            {/* Owner: {owner} */}
+            クリエイターと企業名
+          </p>
+          {priceInput}
+          {button}
+          {/* <a href="#" className="btn btn-secondary">Go somewhere</a> */}
         </div>
       </div>
+
     </div>
   );
 }

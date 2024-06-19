@@ -38,7 +38,8 @@ actor OpenD {
         // TODO : キャニスター作成と稼働に必要なサイクルを調べる
         // キャニスターを作成するときに必要なサイクルを追加する（1000億サイクル）
         // 稼働し続けるためのサイクルを追加する(50億)
-        Cycles.add(100_500_000_000);
+        // ここでいう追加とは消費するサイクルの値として追加なので、サイクルが消費されることとなる
+        // Cycles.add(100_500_000_000);
         let newNFT = await NFTActorClass.NFT(name, owner, imgData);
 
         Debug.print(debug_show(Cycles.balance()));
@@ -185,8 +186,8 @@ actor OpenD {
             addToOwnershipMap(newOwnerId, id);
             return "Success";
         } else {
-            return transferResult;
-            // return "Error";
+            // return transferResult;
+            return "Error";
         }
     };
 };
