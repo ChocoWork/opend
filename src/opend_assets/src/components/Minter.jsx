@@ -113,12 +113,14 @@ function Minter() {
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    setValue("image", file); // Manually set the value of the file input
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setImage(reader.result);
-    };
-    reader.readAsDataURL(file);
+    if (file) { // ファイルが存在することを確認
+      setValue("image", file); // Manually set the value of the file input
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImage(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleCollectionChange = (event) => {
