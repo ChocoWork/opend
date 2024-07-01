@@ -29,9 +29,7 @@ function Item(props) {
   // NFTが格納されている箇所に対してHTTPリクエストを行い、情報を取得する
   // localhost上で動作させているのでlocalhostに対してリクエストを行う。本番環境だとICに対して行うのかな？
   const localHost = "http://localhost:8080";
-
-  // httpエージェントを作成する
-  const agent = new HttpAgent({host: localHost});
+  const agent = new HttpAgent({host: localHost}); // httpエージェントを作成する
 
   // ローカルでの作業時にInternet Computer上の公開鍵を使用した検証をスキップする
   // TODO : メインネットにデプロイする際はこの処理を削除する
@@ -63,10 +61,10 @@ function Item(props) {
     setImage(image);
     
     if (props.role == "gallery") {
-      // 売却リストにNFTのキャニスターIDが存在している場合、ボタンを非表示にする
+      // 売却リストにNFTのキャニスターIDが存在している場合、Sellボタンを非表示にする
       console.log("Item props.id" + props.id);
       const nftIsListed = await opend.isListed(props.id);
-      // const openDId = await opend.getOpenDCanisterID(); // OpendのキャニスターIDを取得する
+      const openDId = await opend.getOpenDCanisterID(); // OpendのキャニスターIDを取得する
       if (nftIsListed) {
         setOwner("OpenD");
         setBlur({filter: "blur(4px)"}); // 画像にぼかしを入れる
@@ -79,6 +77,8 @@ function Item(props) {
       const originalOwner = await opend.getOriginalOwner(props.id);
       if (originalOwner.toText() != CURRENT_USER_ID.toText()) {
         setButton(<Button handleOnclick={handleBuy} text={"Buy"} />);
+      } else {
+        setButton(<Button handleOnclick={handleUnlist} text={"Unlist"} />);
       }
 
       const price = await opend.getListedNFTsPrice(props.id);
@@ -137,11 +137,25 @@ function Item(props) {
     if (result == "Success") {
       // 代金を購入者から出品者に送金し、NFTのオーナーを変更する
       // TODO : CURRENT_USER_IDをログインしているユーザーに変更する
+      console.log("completePurchase start");
       const transferResult = await opend.completePurchase(props.id, sellerId, CURRENT_USER_ID);
       console.log("purchase: " + transferResult);
-      setShoudDisplay(false); // 購入が完了したら、購入画面のアイテムを非表示にする
+      if (transferResult == "Success"){
+        setShoudDisplay(false); // 購入が完了したら、購入画面のアイテムを非表示にする
+      }
     }
     setLoaderHidden(true);
+  }
+
+  async function handleUnlist() {
+    console.log("Unlist was triggered");
+    setLoaderHidden(false);
+    const unlistResutl = await opend.unlistItem(props.id);
+    if (unlistResutl == "Success") {
+      setShoudDisplay(false); // 売却キャンセルが完了したら、購入画面のアイテムを非表示にする
+    } else {
+      console.log("unlistResutl: " + unlistResutl);
+    }
   }
 
   return (

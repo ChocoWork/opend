@@ -8,4 +8,5 @@ service : {
   isListed: (principal) -> (bool) query;
   listItem: (principal, nat) -> (text);
   mint: (vec nat8, text) -> (principal);
+  unlistItem: (principal) -> (text);
 }

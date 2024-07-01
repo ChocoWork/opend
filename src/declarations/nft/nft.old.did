@@ -1,7 +1,15 @@
+type Status = 
+ variant {
+   Lending;
+   Listing;
+   Own;
+ };
 service : {
+  getAdmin: () -> (principal) query;
   getAsset: () -> (vec nat8) query;
   getCanisterId: () -> (principal) query;
   getName: () -> (text) query;
   getOwner: () -> (principal) query;
+  getStatus: () -> (Status) query;
   transferOwnership: (principal) -> (text);
 }

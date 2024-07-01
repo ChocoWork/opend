@@ -46,9 +46,12 @@ function Minter() {
     // TODO : 画像だけでなく、書籍、音楽等、さまざまな形式に対応させたい
     try {
       console.log("onSubmit function is running");
-      setLoaderHidden(false);
+
+      // data check debug
       console.log(data.image)
       console.log(data.name);
+
+      setLoaderHidden(false);
       const name = data.name;
       
       // 画像を複数読ませる場合は配列指定が必要
@@ -62,7 +65,10 @@ function Minter() {
       console.log("[...new Uint8Array(imageArray)]");
       const imageByteData = [...new Uint8Array(imageArray)];
       console.log("await opend.mint(imageByteData, name)");
+
+      // mint関数の引数を変更する必要がある
       const newNFTID = await opend.mint(imageByteData, name);
+
       console.log(newNFTID.toText());
       setLoaderHidden(true);
       setNFTPrincipal(newNFTID);
@@ -152,25 +158,6 @@ function Minter() {
                   </div>
 
                   {/* TODO : 作成したコレクションを表示させる */}
-                  {/* <div className="col-12">
-                    <label htmlFor="collection" className="form-label">Collection</label>
-                    <select className="form-select" id="collection" required>
-                      <option value="">Choose...</option>
-                      <option>Create Collection</option>
-                    </select>
-                    <div className="invalid-feedback">
-                      Please select a Collection.
-                    </div>
-                  </div>
-
-                  <div className="col-12">
-                    <label htmlFor="newcollectionname" className="form-label">New Collection Name</label>
-                    <input type="text" className="form-control" id="newcollectionname" placeholder="Prease your new collection name" />
-                    <div className="invalid-feedback">
-                      New Collection Name is required.
-                    </div>
-                  </div> */}
-
                   <div className="col-12">
                     <label htmlFor="collection" className="form-label">Collection</label>
                     <select className="form-select" id="collection" required onChange={handleCollectionChange}>
