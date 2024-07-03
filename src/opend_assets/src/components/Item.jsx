@@ -15,6 +15,7 @@ function Item(props) {
   const [owner, setOwner] = useState();
   const [image, setImage] = useState();
   const [button, setButton] = useState();
+  const [lentButton, setLentButton] = useState();
   const [priceInput, setPriceInput] = useState();
   const [loaderHidden, setLoaderHidden] = useState(true);
   const [blur, setBlur] = useState();
@@ -72,6 +73,7 @@ function Item(props) {
         // TODO : 貸出中と借りているかどうかを表示させる
       } else {
         setButton(<Button handleOnclick={handleSell} text={"Sell"} />);
+        setLentButton(<Button handleOnclick={handleLent} text={"Lent"} />);
       }
     } else if (props.role == "shop") {
       const originalOwner = await opend.getOriginalOwner(props.id);
@@ -158,6 +160,10 @@ function Item(props) {
     }
   }
 
+  async function handleLent() {
+    
+  }
+
   return (
     <div style={{display: shoudDisplay ? "inline" : "none"}} className="disGrid-item">
       {/* <div className="disPaper-root disCard-root makeStyles-root-17 disPaper-elevation1 disPaper-rounded card-style">
@@ -216,11 +222,12 @@ function Item(props) {
           {priceLabel}
           <p className="disTypography-root makeStyles-bodyText-24 disTypography-body2 disTypography-colorTextSecondary">
             {/* TODO : クリエイターと企業名をOwnerの部分に入れる */}
-            {/* Owner: {owner} */}
-            クリエイターと企業名
+            Owner: {owner}
+            {/* クリエイターと企業名 */}
           </p>
           {priceInput}
           {button}
+          {lentButton}
           {/* <a href="#" className="btn btn-secondary">Go somewhere</a> */}
         </div>
       </div>
