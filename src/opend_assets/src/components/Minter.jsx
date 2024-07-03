@@ -27,6 +27,16 @@ function Minter() {
   const [collection, setCollection] = useState("");
   const [showNewCollectionName, setShowNewCollectionName] = useState(false);
 
+  const [isResalePriceRangePrev, setIsResalePriceRangePrev] = useState(false);
+  const [saleProfitShare, setSaleProfitShare] = useState("");
+  const [minResalePrice, setMinResalePrice] = useState("");
+  const [maxResalePrice, setMaxResalePrice] = useState("");
+
+  const [isLendingPriceRangePrev, setIsLendingPriceRangePrev] = useState(false);
+  const [lendProfitShare, setLendProfitShare] = useState("");
+  const [minLendPrice, setMinLendPrice] = useState("");
+  const [maxLendPrice, setMaxLendPrice] = useState("");
+
   const { getRootProps, getInputProps } = useDropzone({
     accept: 'image/x-png,image/jpeg,image/gif,image/svg+xml,image/webp',
     onDrop: (acceptedFiles) => {
@@ -48,7 +58,7 @@ function Minter() {
       console.log("onSubmit function is running");
 
       // data check debug
-      console.log(data.image)
+      console.log(data.image);
       console.log(data.name);
 
       setLoaderHidden(false);
@@ -87,6 +97,25 @@ function Minter() {
       setItems([{ authorType: "", name: "", share: "" }]);
     }
   }, []);
+
+
+  useEffect(() => {
+    if (isResaleProhibited) {
+      setIsResalePriceRangePrev(isResalePriceRange);
+      setIsResalePriceRange(false);
+    } else {
+      setIsResalePriceRange(isResalePriceRangePrev);
+    }
+  }, [isResaleProhibited]);
+
+  useEffect(() => {
+    if (isNonLending) {
+      setIsLendingPriceRangePrev(isLendingPriceRange);
+      setIsLendingPriceRange(false);
+    } else {
+      setIsLendingPriceRange(isLendingPriceRangePrev);
+    }
+  }, [isNonLending]);
 
   // Handle change for each item
   const handleItemChange = (index, field, value) => {
@@ -329,37 +358,42 @@ function Minter() {
                       </div>
                       <div className="col-2">
                         <div className="toggle_button">
-                          <input id="resale-prohibited" className="toggle_input" type="checkbox" onChange={() => setIsResaleProhibited(!isResaleProhibited)} />
+                          <input id="resale-prohibited" className="toggle_input" type="checkbox" onChange={() => {
+                            setIsResaleProhibited(!isResaleProhibited);
+                            if (!isResaleProhibited) {
+                              setIsResalePriceRangePrev(isResalePriceRange);
+                            }
+                          }} />
                           <label htmlFor="resale-prohibited" className="toggle_label" />
                         </div>
                       </div>
                     </div>
                   </div>
 
-                  {/* TODO: Sale Profit Share(売却時の利益率) */}
+                  {/* TODO: ReSale Profit Share(売却時の利益率) */}
                   {/* Resale Prohibitedが無効の場合のみ設定可能にする */}
                   {!isResaleProhibited && (
                     <div className="col-12">
-                      <label htmlFor="itemname" className="form-label">Sale Profit Share</label>
-                      <input type="text" className="form-control" id="itemname" placeholder="0 ~ 100 [%]" required />
+                      <label htmlFor="itemname" className="form-label">ReSale Profit Share</label>
+                      <input type="text" className="form-control" id="itemname" value={saleProfitShare} onChange={(e) => setSaleProfitShare(e.target.value)} placeholder="0 ~ 100 [%]" required />
                       <div className="invalid-feedback">
-                      Sale Profit Share is required.
+                      ReSale Profit Share is required.
                       </div>
                     </div>
                   )}
 
-                  {/* TODO: Selling Price Range(売値幅) */}
+                  {/* TODO: Resale Price Range(売値幅) */}
                   {/* Resale Prohibitedが無効の場合のみ設定可能にする */}
                   {!isResaleProhibited && (
                   <div className="col-12">
                     <div className="row">
                       <div className="col-10">
-                        <label htmlFor="selling-price-range" className="form-label">Selling Price Range</label>
+                        <label htmlFor="resale-price-range" className="form-label">Resale Price Range</label>
                       </div>
                       <div className="col-2">
                         <div className="toggle_button">
-                          <input id="selling-price-range" className="toggle_input" type="checkbox" onChange={() => setIsResalePriceRange(!isResalePriceRange)} />
-                          <label htmlFor="selling-price-range" className="toggle_label" />
+                          <input type="checkbox" className="toggle_input" id="resale-price-range" checked={isResalePriceRange} onChange={() => {setIsResalePriceRange(!isResalePriceRange)}} />
+                          <label htmlFor="resale-price-range" className="toggle_label" />
                         </div>
                       </div>
                       {isResalePriceRange && (
@@ -368,7 +402,7 @@ function Minter() {
                             <div className="col-6">
                               <div class="input-group has-validation">
                                 <span class="input-group-text">Min</span>
-                                <input type="text" className="form-control" id="min-price" placeholder="" required="" />
+                                <input type="number" className="form-control" id="min-price" value={minResalePrice} onChange={(e) => setMinResalePrice(e.target.value)} placeholder="" required="" />
                                 <div class="invalid-feedback">
                                   Min Price is required.
                                 </div>
@@ -377,7 +411,7 @@ function Minter() {
                             <div className="col-6">
                               <div class="input-group has-validation">
                                 <span class="input-group-text">Max</span>
-                                <input type="text" className="form-control" id="max-price" placeholder="" required="" />
+                                <input type="number" className="form-control" id="max-price" value={maxResalePrice} onChange={(e) => setMaxResalePrice(e.target.value)} placeholder="" required="" />
                                 <div class="invalid-feedback">
                                   Max Price is required.
                                 </div>
@@ -401,7 +435,12 @@ function Minter() {
                       </div>
                       <div className="col-2">
                         <div className="toggle_button">
-                          <input id="non-lending" className="toggle_input" type="checkbox" onChange={() => setIsNonLending(!isNonLending)} />
+                          <input id="non-lending" className="toggle_input" type="checkbox" onChange={() => {
+                            setIsNonLending(!isNonLending)
+                            if (!isNonLending) {
+                              setIsLendingPriceRangePrev(isLendingPriceRange);
+                            }
+                          }} />
                           <label htmlFor="non-lending" className="toggle_label" />
                         </div>
                       </div>
@@ -413,7 +452,7 @@ function Minter() {
                   {!isNonLending && (
                     <div className="col-12">
                       <label htmlFor="lend-profit-share" className="form-label">Lend Profit Share</label>
-                      <input type="text" className="form-control" id="lend-profit-share" placeholder="0 ~ 100 [%]" required />
+                      <input type="text" className="form-control" id="lend-profit-share" value={lendProfitShare} onChange={(e) => setLendProfitShare(e.target.value)} placeholder="0 ~ 100 [%]" required />
                       <div className="invalid-feedback">
                         Lend Profit Share is required.
                       </div>
@@ -430,7 +469,7 @@ function Minter() {
                         </div>
                         <div className="col-2">
                           <div class="toggle_button">
-                            <input id="toggle" class="toggle_input" type='checkbox' onChange={() => setIsLendingPriceRange(!isLendingPriceRange)} />
+                            <input id="toggle" class="toggle_input" type='checkbox' checked={isLendingPriceRange} onChange={() => setIsLendingPriceRange(!isLendingPriceRange)} />
                             <label for="toggle" class="toggle_label"/>
                           </div>
                         </div>
@@ -440,7 +479,7 @@ function Minter() {
                               <div className="col-6">
                                 <div class="input-group has-validation">
                                   <span class="input-group-text">Min</span>
-                                  <input type="text" className="form-control" id="minPrice" placeholder="" required="" />
+                                  <input type="text" className="form-control" id="minPrice" value={minLendPrice} onChange={(e) => setMinLendPrice(e.target.value)} placeholder="" required="" />
                                   <div class="invalid-feedback">
                                     Min Price is required.
                                   </div>
@@ -449,7 +488,7 @@ function Minter() {
                               <div className="col-6">
                                 <div class="input-group has-validation">
                                   <span class="input-group-text">Max</span>
-                                  <input type="text" className="form-control" id="maxPrice" placeholder="" required="" />
+                                  <input type="text" className="form-control" id="maxPrice" value={maxLendPrice} onChange={(e) => setMaxLendPrice(e.target.value)}placeholder="" required="" />
                                   <div class="invalid-feedback">
                                     Max Price is required.
                                   </div>

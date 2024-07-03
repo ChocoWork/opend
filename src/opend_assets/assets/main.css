@@ -949,11 +949,14 @@ label[data-shrink="false"]
 .makeStyles-chipBlue-108 {
   color: #5f64b5;
   height: 50px;
-  padding: 5px;
+  /* padding: 5px; */
+  padding: 0px 10px;
   font-size: 16px;
   /* margin-top: 40px; */
-  margin-top: 10px;
-  border-radius: 25px;
+  /* margin-top: 10px; */
+  margin: 10px 10px;
+  /* border-radius: 25px; */
+  border-radius: 10px;
   background-color: rgba(55, 114, 255, 0.1);
 }
 .makeStyles-form-109 .form-OutlinedInput-input {
