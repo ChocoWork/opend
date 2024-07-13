@@ -12,6 +12,6 @@ type NFT =
    getName: () -> (text) query;
    getOwner: () -> (principal) query;
    getStatus: () -> (Status) query;
-   transferOwnership: (principal) -> (text);
+   transferOwnership: (principal, text) -> (text);
  };
 service : (text, principal, vec nat8) -> NFT

@@ -21,7 +21,7 @@ function Footer() {
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-5 py-5 justify-content-center text-start">
           <div class="col-md-4 mb-3">
             <h4 class="text-dark ">Stor</h4>
-            <p class="text-body-secondary">手に届くものの正しさを証明。クリエイティブを守り、リアルとデジタルのシームレスな社会へ。</p>
+            <p class="text-body-secondary">手に届くものの正しさを証明。クリエイターを守り、リアルとデジタルのシームレスな社会へ。</p>
           </div>
 
           {/* <div class="col mb-3">
@@ -33,7 +33,7 @@ function Footer() {
             <ul class="nav flex-column">
               <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">Gallery</a></li>
               <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">Shop</a></li>
-              <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">Lent</a></li>
+              <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">Rent</a></li>
               <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">Create</a></li>
             </ul>
           </div>

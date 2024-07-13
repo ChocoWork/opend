@@ -6,7 +6,7 @@ export interface NFT {
   'getName' : () => Promise<string>,
   'getOwner' : () => Promise<Principal>,
   'getStatus' : () => Promise<Status>,
-  'transferOwnership' : (arg_0: Principal) => Promise<string>,
+  'transferOwnership' : (arg_0: Principal, arg_1: string) => Promise<string>,
 }
 export type Status = { 'Own' : null } |
   { 'Lending' : null } |

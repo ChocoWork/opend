@@ -1,12 +1,24 @@
 service : {
+  completeLending: (principal, principal, principal) -> (text);
   completePurchase: (principal, principal, principal) -> (text);
+  getLentItemOriginalAdmin: (principal) -> (principal) query;
+  getLentNFTs: () -> (vec principal) query;
   getListedNFTs: () -> (vec principal) query;
   getListedNFTsPrice: (principal) -> (nat) query;
   getOpenDCanisterID: () -> (principal) query;
   getOriginalOwner: (principal) -> (principal) query;
   getOwnedNFTs: (principal) -> (vec principal) query;
+  getRentItemOriginalAdmin: (principal) -> (principal) query;
+  getRentNFTs: () -> (vec principal) query;
+  getRentNFTsPrice: (principal) -> (nat) query;
+  isLent: (principal) -> (bool) query;
   isListed: (principal) -> (bool) query;
+  isRent: (principal) -> (bool) query;
+  lentItem: (principal, principal, nat) -> (text);
   listItem: (principal, nat) -> (text);
   mint: (vec nat8, text) -> (principal);
+  rentItem: (principal, nat, nat) -> (text);
+  returnRentItem: (principal) -> (text);
   unlistItem: (principal) -> (text);
+  withdrawItem: (principal) -> (text);
 }

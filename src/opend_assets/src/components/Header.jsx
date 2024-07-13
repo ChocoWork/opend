@@ -11,20 +11,23 @@ function Header() {
 
   const [userOwnedGallary, setOwnedGallary] = useState();
   const [listingGallery, setListingGallery] = useState();
+  const [lendingGallery, setLendingGallery] = useState();
 
   async function getNFTs () {
     // TODO : CURRENT_USER_IDをログインしているIDに変更する
-    // console.log("start getNFTs");
+    // --- Gallery ---
     const userNFTIds = await opend.getOwnedNFTs(CURRENT_USER_ID);
-    // console.log("end getNFTs");
-    // console.log(userNFTIds);
-    // setOwnedGallary(<Gallery title="Gallery" ids={userNFTIds} role="gallery" />);
     setOwnedGallary(<Gallery ids={userNFTIds} role="gallery" />);
 
+    // --- Listing ---
     const listedNFTIds = await opend.getListedNFTs();
     console.log(listedNFTIds);
-    // setListingGallery(<Gallery title="Shop" ids={listedNFTIds} role="shop" />);
     setListingGallery(<Gallery ids={listedNFTIds} role="shop" />);
+    
+    // --- Rending ---
+    const lentNFTIds = await opend.getRentNFTs();
+    console.log(lentNFTIds);
+    setLendingGallery(<Gallery ids={lentNFTIds} role="lent" />);
   }
 
   // このページが読み込まれたときにIDに紐づくNFTのリストを読み込む
@@ -92,7 +95,7 @@ function Header() {
                 <NavLink to="/shop" className="nav-link px-2 text-dark" activeClassName="box-with-line">Shop</NavLink>
               </li>
               <li>
-                <NavLink to="/lent" className="nav-link px-2 text-dark" activeClassName="box-with-line">Lent</NavLink>
+                <NavLink to="/lent" className="nav-link px-2 text-dark" activeClassName="box-with-line">Rent</NavLink>
               </li>
               <li>
                 <NavLink to="/create" className="nav-link px-2 text-dark" activeClassName="box-with-line">Create</NavLink>
@@ -125,6 +128,9 @@ function Header() {
         </Route>
         <Route path="/shop">
           {listingGallery}
+        </Route>
+        <Route path="/lent">
+          {lendingGallery}
         </Route>
         <Route path="/create">
           <Minter />

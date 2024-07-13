@@ -96,57 +96,137 @@ actor class NFT (name: Text, owner: Principal, content: [Nat8]) = this {
         return Principal.fromActor(this);
     };
 
-    // public shared(msg) func transferOwnership(newOwner : Principal) : async Text {
-    //     if (msg.caller == nftOwner) {
-    //         nftOwner := newOwner;
-    //         return "Success";
-    //     } else {
-    //         return "Error: Not initated by NFT Owner.";
-    //     }
-    // };
-
     // --- Action ---
-    public shared(msg) func transferOwnership(newOwner : Principal) : async Text {
-        // --- Sell ---
-        if (itemStatus == #Own and msg.caller == nftAdmin and msg.caller == nftOwner) {
-            let changeOwnerResult = await changeOwner(msg.caller, newOwner);
-            Debug.print("changeOwnerResult 1: " #debug_show(changeOwnerResult));
-            if (changeOwnerResult == "Success") {
-                let changeStateResult = await changeState(#Listing);
-                Debug.print("changeStateResult : " #debug_show(changeStateResult));
-                return changeStateResult;
-            } else {
-                return changeOwnerResult;
-            }
-        // --- Buy ---
-        } else if (itemStatus == #Listing and nftAdmin != msg.caller and nftOwner == msg.caller) {
-            let changeAdminResult = await changeAdmin(msg.caller, newOwner);
-            Debug.print("changeAdminResult: " #debug_show(changeAdminResult));
-            if (changeAdminResult == "Success") {
-                let changeOwnerResult = await changeOwner(msg.caller, newOwner);
-                Debug.print("changeOwnerResult 2: " #debug_show(changeOwnerResult));
-                if (changeOwnerResult == "Success") {
-                    let changeStateResult = await changeState(#Own);
-                    Debug.print("changeStateResult 2: " #debug_show(changeStateResult));
-                    return changeStateResult;
+    public shared(msg) func transferOwnership(newOwner : Principal, action : Text ) : async Text {
+        switch(action) {
+            // --- Sell ---
+            case("sell") { 
+                if (itemStatus == #Own and msg.caller == nftAdmin and msg.caller == nftOwner) {
+                    let changeOwnerResult = await changeOwner(msg.caller, newOwner);
+                    if (changeOwnerResult == "Success") {
+                        let changeStateResult = await changeState(#Listing);
+                        return changeStateResult;
+                    } else {
+                        return changeOwnerResult;
+                    }
                 } else {
-                    return changeOwnerResult;
+                    return "Error: Execution conditions not met";
                 }
-            } else {
-                return changeAdminResult;
-            }
-        // --- Unlist ---
-        } else if (itemStatus == #Listing and nftAdmin == newOwner and nftOwner == msg.caller){
-            let changeOwnerResult = await changeOwner(msg.caller, newOwner);
-            if (changeOwnerResult == "Success") {
-                let changeStateResult = await changeState(#Own);
-                return changeStateResult;
-            }
-            else {
-                return changeOwnerResult;
-            }
-        } else {
-            return "Error: Not initiated by NFT Owner.";
-        }
+            };
+            // --- Buy ---
+            case("buy") {
+                if (itemStatus == #Listing and nftAdmin != msg.caller and nftOwner == msg.caller) {
+                    let changeAdminResult = await changeAdmin(msg.caller, newOwner);
+                    if (changeAdminResult == "Success") {
+                        let changeOwnerResult = await changeOwner(msg.caller, newOwner);
+                        if (changeOwnerResult == "Success") {
+                            let changeStateResult = await changeState(#Own);
+                            return changeStateResult;
+                        } else {
+                            return changeOwnerResult;
+                        }
+                    } else {
+                        return changeAdminResult;
+                    }
+                } else {
+                    return "Error: Execution conditions not met";
+                }
+            };
+            // --- Unlist ---
+            case("unlist") {
+                if (itemStatus == #Listing and nftAdmin == newOwner and nftOwner == msg.caller){
+                    let changeOwnerResult = await changeOwner(msg.caller, nftAdmin);
+                    if (changeOwnerResult == "Success") {
+                        let changeStateResult = await changeState(#Own);
+                        return changeStateResult;
+                    }
+                    else {
+                        return changeOwnerResult;
+                    }
+                } else {
+                    return "Error: Execution conditions not met";
+                }
+            };
+            // --- Lent ---
+            case("lent") {
+                if (itemStatus == #Own and msg.caller == nftAdmin and msg.caller == nftOwner) {
+                    let changeOwnerResult = await changeOwner(msg.caller, newOwner);
+                    if (changeOwnerResult == "Success") {
+                        let changeStateResult = await changeState(#Lending);
+                        return changeStateResult;
+                    } else {
+                        return changeOwnerResult;
+                    }
+                } else {
+                    return "Error: Execution conditions not met";
+                }
+            };
+            // --- Return Lent(User→User) ---
+            case("return lent") {
+                if (itemStatus == #Lending and msg.caller != nftAdmin and msg.caller == nftOwner) {
+                    let changeOwnerResult = await changeOwner(msg.caller, nftAdmin);
+                    if (changeOwnerResult == "Success") {
+                        let changeStateResult = await changeState(#Lending);
+                        return changeStateResult;
+                    } else {
+                        return changeOwnerResult;
+                    }
+                } else {
+                    return "Error: Execution conditions not met";
+                }
+            };
+            // --- Rent ---
+            case("rent") {
+                if (itemStatus == #Own and msg.caller == nftAdmin and msg.caller == nftOwner) {
+                    let changeOwnerResult = await changeOwner(msg.caller, newOwner);
+                    if (changeOwnerResult == "Success") {
+                        let changeStateResult = await changeState(#Lending);
+                        return changeStateResult;
+                    } else {
+                        return changeOwnerResult;
+                    }
+                } else {
+                    return "Error: Execution conditions not met";
+                }
+            };
+            // --- Borrow ---
+            case("borrow") {
+                if (itemStatus == #Lending and nftAdmin != msg.caller and nftOwner == msg.caller) {
+                    let changeOwnerResult = await changeOwner(msg.caller, newOwner);
+                    return changeOwnerResult;
+                } else {
+                    return "Error: Execution conditions not met";
+                }
+            };
+            // --- Return Rent(User→System) ---
+            case("return rent") {
+                Debug.print("itemStatus : " #debug_show(itemStatus));
+                Debug.print("itemStatus : " #debug_show(nftAdmin));
+                Debug.print("itemStatus : " #debug_show(msg.caller));
+                Debug.print("itemStatus : " #debug_show(newOwner));
+                // Debug.print("itemStatus : " #debug_show(nftOwner));
+                if (itemStatus == #Lending and nftAdmin != msg.caller and nftOwner == msg.caller) {
+                    let changeOwnerResult = await changeOwner(msg.caller, newOwner);
+                    return changeOwnerResult;
+                } else {
+                    return "Error: Execution conditions not met";
+                }
+            };
+            // --- Withdraw(System→User) ---
+            case("withdraw") {
+                if (itemStatus == #Lending and nftAdmin == newOwner and nftOwner == msg.caller) {
+                    let changeOwnerResult = await changeOwner(msg.caller, nftAdmin);
+                    if (changeOwnerResult == "Success") {
+                        let changeStateResult = await changeState(#Own);
+                        return changeStateResult;
+                    } else {
+                        return changeOwnerResult;
+                    }
+                } else {
+                    return "Error: Execution conditions not met";
+                }
+            };
+            case _ { return "Error: Invalid action"; };
+        };
     };
 };

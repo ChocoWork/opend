@@ -11,7 +11,7 @@ export const idlFactory = ({ IDL }) => {
     'getName' : IDL.Func([], [IDL.Text], ['query']),
     'getOwner' : IDL.Func([], [IDL.Principal], ['query']),
     'getStatus' : IDL.Func([], [Status], ['query']),
-    'transferOwnership' : IDL.Func([IDL.Principal], [IDL.Text], []),
+    'transferOwnership' : IDL.Func([IDL.Principal, IDL.Text], [IDL.Text], []),
   });
   return NFT;
 };

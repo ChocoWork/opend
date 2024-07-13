@@ -11,5 +11,5 @@ service : {
   getName: () -> (text) query;
   getOwner: () -> (principal) query;
   getStatus: () -> (Status) query;
-  transferOwnership: (principal) -> (text);
+  transferOwnership: (principal, text) -> (text);
 }
