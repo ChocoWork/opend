@@ -6,8 +6,8 @@ import { idlFactory as tokenIdlFactory} from "../../../declarations/token";
 import { Principal } from "@dfinity/principal";
 import Button from "./Button";
 import { opend } from "../../../declarations/opend";
-import CURRENT_USER_ID from "../index";
 import PriceLabel from "./PriceLabel";
+import { useUserId } from './UserIdContext';
 
 function Item(props) {
 
@@ -25,6 +25,8 @@ function Item(props) {
   const [sellStatus, setSellStatus] = useState();
   const [priceLabel, setPriceLabel] = useState();
   const [shoudDisplay, setShoudDisplay] = useState(true);
+
+  const { userId } = useUserId();
 
   // NFTキャニスターIDをPrincipal IDに変換する
   // const id = Principal.fromText(props.id);
@@ -78,7 +80,7 @@ function Item(props) {
         // TODO : 貸出中と借りているかどうかを表示させる
       } else if (nftIsLent) {
         const nftLentAdmin = await opend.getLentItemOriginalAdmin(props.id);
-        if (nftLentAdmin.toText() == CURRENT_USER_ID) {
+        if (nftLentAdmin.toText() == userId) {
           setBlur({filter: "blur(4px)"}); // 画像にぼかしを入れる
           setSellStatus("Lent");
         } else {
@@ -88,8 +90,8 @@ function Item(props) {
       } else if (nftIsRent) {
         const nftRentAdmin = await opend.getRentItemOriginalAdmin(props.id);
         console.log("nftRentAdmin: " + nftRentAdmin.toText());
-        console.log("CURRENT_USER_ID: " + CURRENT_USER_ID);
-        if (nftRentAdmin.toText() == CURRENT_USER_ID) {
+        console.log("userId: " + userId);
+        if (nftRentAdmin.toText() == userId) {
           setBlur({filter: "blur(4px)"}); // 画像にぼかしを入れる
           setSellStatus("Lent");
         } else {
@@ -102,7 +104,7 @@ function Item(props) {
       }
     } else if (props.role == "shop") {
       const originalOwner = await opend.getOriginalOwner(props.id);
-      if (originalOwner.toText() != CURRENT_USER_ID.toText()) {
+      if (originalOwner.toText() != userId.toText()) {
         setButton(<Button handleOnclick={handleBuy} text={"Buy"} />);
       } else {
         setButton(<Button handleOnclick={handleUnlist} text={"Unlist"} />);
@@ -112,10 +114,10 @@ function Item(props) {
       setPriceLabel(<PriceLabel sellPrice={price.toString()} />)
     } else if ( props.role == "lent") {
       const RentItemOriginalAdmin = await opend.getRentItemOriginalAdmin(props.id);
-      if (RentItemOriginalAdmin.toText() == CURRENT_USER_ID.toText()) {
+      if (RentItemOriginalAdmin.toText() == userId.toText()) {
         setButton(<Button handleOnclick={handleWithdraw} text={"Withdraw"} />);
       } else {
-        if (owner.toText() == CURRENT_USER_ID.toText()) {
+        if (owner.toText() == userId.toText()) {
           setBlur({filter: "blur(4px)"}); // 画像にぼかしを入れる
         } else {
           setButton(<Button handleOnclick={handleBorrow} text={"Borrow"} />);
@@ -245,7 +247,7 @@ function Item(props) {
     
     const result = await tokenActor.transfer(lenderId, rentalPrice);
     if (result == "Success") {
-      const lendingResult = await opend.completeLending(props.id, lenderId, CURRENT_USER_ID)
+      const lendingResult = await opend.completeLending(props.id, lenderId, userId)
       if (lendingResult) {
         setBlur({filter: "blur(4px)"}); // 画像にぼかしを入れる
         setButton();
@@ -325,7 +327,7 @@ function Item(props) {
       // 代金を購入者から出品者に送金し、NFTのオーナーを変更する
       // TODO : CURRENT_USER_IDをログインしているユーザーに変更する
       console.log("completePurchase start");
-      const transferResult = await opend.completePurchase(props.id, sellerId, CURRENT_USER_ID);
+      const transferResult = await opend.completePurchase(props.id, sellerId, userId);
       console.log("purchase: " + transferResult);
       if (transferResult == "Success"){
         setShoudDisplay(false); // 購入が完了したら、購入画面のアイテムを非表示にする

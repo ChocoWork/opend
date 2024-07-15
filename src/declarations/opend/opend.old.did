@@ -18,6 +18,7 @@ service : {
   listItem: (principal, nat) -> (text);
   mint: (vec nat8, text) -> (principal);
   rentItem: (principal, nat, nat) -> (text);
+  returnLentItem: (principal) -> (text);
   returnRentItem: (principal) -> (text);
   unlistItem: (principal) -> (text);
   withdrawItem: (principal) -> (text);

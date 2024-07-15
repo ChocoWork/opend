@@ -3,19 +3,16 @@ import Header from "./Header";
 import Footer from "./Footer";
 import "bootstrap/dist/css/bootstrap.min.css";
 import 'bootstrap/dist/js/bootstrap.bundle.min';
-// import homeImage from "../../assets/home-img.png";
-import Item from "./Item";
-import Minter from "./Minter";
+import { UserIdProvider } from './UserIdContext';
 
 function App() {
-  
-  // const NFTID = "rrkah-fqaaa-aaaaa-aaaaq-cai";
-
   return (
-    <div className="App">
-      <Header />
-      <Footer />
-    </div>
+    <UserIdProvider>
+      <div className="App">
+        <Header />
+        <Footer />
+      </div>
+    </UserIdProvider>
   );
 }
 

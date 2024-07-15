@@ -15,8 +15,8 @@ actor class NFT (name: Text, owner: Principal, content: [Nat8]) = this {
     // let: 再代入不可 var: 再代入可
     // private: 他のクラスやアクターに変更されない
     private let itemName = name;
-    private var nftAdmin = owner;
-    private var nftOwner = owner;
+    private var itemAdmin = owner;
+    private var itemOwner = owner;
     private let imageBytes = content;
     private var itemStatus : Status = #Own;
 
@@ -25,15 +25,15 @@ actor class NFT (name: Text, owner: Principal, content: [Nat8]) = this {
     };
 
     public query func getAdmin() : async Principal {
-        return nftAdmin;
+        return itemAdmin;
     };
 
     private func changeAdmin(caller : Principal, newAdmin : Principal) : async Text {
         // Debug.print("itemStatus : " #debug_show(itemStatus));
         // Debug.print("caller : " #debug_show(caller));
-        // Debug.print("nftOwner : " #debug_show(nftOwner));
-        if (itemStatus == #Listing and caller == nftOwner) {
-            nftAdmin := newAdmin;
+        // Debug.print("itemOwner : " #debug_show(itemOwner));
+        if (itemStatus == #Listing and caller == itemOwner) {
+            itemAdmin := newAdmin;
             return "Success";
         } else {
             return "Error: Not initiated by NFT Admin.";
@@ -41,13 +41,13 @@ actor class NFT (name: Text, owner: Principal, content: [Nat8]) = this {
     };
 
     public query func getOwner() : async Principal {
-        return nftOwner;
+        return itemOwner;
     };
 
     private func changeOwner(caller : Principal, newOwner : Principal) : async Text {
         // callerがnftAdminの場合、システムから自分の手元に戻すことを意味する
-        if (caller == nftOwner or caller == nftAdmin) {
-            nftOwner := newOwner;
+        if (caller == itemOwner or caller == itemAdmin) {
+            itemOwner := newOwner;
             return "Success";
         } else {
             return "Error: Not initiated by NFT Owner.";
@@ -63,8 +63,6 @@ actor class NFT (name: Text, owner: Principal, content: [Nat8]) = this {
     };
 
     private func changeState(newStatus : Status) : async Text {
-        // itemStatus := newStatus;
-        // return "Success";
         if (itemStatus == #Own) {
             if (newStatus == #Listing or newStatus == #Lending) {
                 itemStatus := newStatus;
@@ -101,7 +99,7 @@ actor class NFT (name: Text, owner: Principal, content: [Nat8]) = this {
         switch(action) {
             // --- Sell ---
             case("sell") { 
-                if (itemStatus == #Own and msg.caller == nftAdmin and msg.caller == nftOwner) {
+                if (itemStatus == #Own and msg.caller == itemAdmin and msg.caller == itemOwner) {
                     let changeOwnerResult = await changeOwner(msg.caller, newOwner);
                     if (changeOwnerResult == "Success") {
                         let changeStateResult = await changeState(#Listing);
@@ -115,7 +113,7 @@ actor class NFT (name: Text, owner: Principal, content: [Nat8]) = this {
             };
             // --- Buy ---
             case("buy") {
-                if (itemStatus == #Listing and nftAdmin != msg.caller and nftOwner == msg.caller) {
+                if (itemStatus == #Listing and itemAdmin != msg.caller and itemOwner == msg.caller) {
                     let changeAdminResult = await changeAdmin(msg.caller, newOwner);
                     if (changeAdminResult == "Success") {
                         let changeOwnerResult = await changeOwner(msg.caller, newOwner);
@@ -134,8 +132,8 @@ actor class NFT (name: Text, owner: Principal, content: [Nat8]) = this {
             };
             // --- Unlist ---
             case("unlist") {
-                if (itemStatus == #Listing and nftAdmin == newOwner and nftOwner == msg.caller){
-                    let changeOwnerResult = await changeOwner(msg.caller, nftAdmin);
+                if (itemStatus == #Listing and itemAdmin == newOwner and itemOwner == msg.caller){
+                    let changeOwnerResult = await changeOwner(msg.caller, itemAdmin);
                     if (changeOwnerResult == "Success") {
                         let changeStateResult = await changeState(#Own);
                         return changeStateResult;
@@ -149,7 +147,7 @@ actor class NFT (name: Text, owner: Principal, content: [Nat8]) = this {
             };
             // --- Lent ---
             case("lent") {
-                if (itemStatus == #Own and msg.caller == nftAdmin and msg.caller == nftOwner) {
+                if (itemStatus == #Own and msg.caller == itemAdmin and msg.caller == itemOwner) {
                     let changeOwnerResult = await changeOwner(msg.caller, newOwner);
                     if (changeOwnerResult == "Success") {
                         let changeStateResult = await changeState(#Lending);
@@ -163,8 +161,8 @@ actor class NFT (name: Text, owner: Principal, content: [Nat8]) = this {
             };
             // --- Return Lent(User→User) ---
             case("return lent") {
-                if (itemStatus == #Lending and msg.caller != nftAdmin and msg.caller == nftOwner) {
-                    let changeOwnerResult = await changeOwner(msg.caller, nftAdmin);
+                if (itemStatus == #Lending and msg.caller != itemAdmin and msg.caller == itemOwner) {
+                    let changeOwnerResult = await changeOwner(msg.caller, itemAdmin);
                     if (changeOwnerResult == "Success") {
                         let changeStateResult = await changeState(#Lending);
                         return changeStateResult;
@@ -177,7 +175,7 @@ actor class NFT (name: Text, owner: Principal, content: [Nat8]) = this {
             };
             // --- Rent ---
             case("rent") {
-                if (itemStatus == #Own and msg.caller == nftAdmin and msg.caller == nftOwner) {
+                if (itemStatus == #Own and msg.caller == itemAdmin and msg.caller == itemOwner) {
                     let changeOwnerResult = await changeOwner(msg.caller, newOwner);
                     if (changeOwnerResult == "Success") {
                         let changeStateResult = await changeState(#Lending);
@@ -191,7 +189,7 @@ actor class NFT (name: Text, owner: Principal, content: [Nat8]) = this {
             };
             // --- Borrow ---
             case("borrow") {
-                if (itemStatus == #Lending and nftAdmin != msg.caller and nftOwner == msg.caller) {
+                if (itemStatus == #Lending and itemAdmin != msg.caller and itemOwner == msg.caller) {
                     let changeOwnerResult = await changeOwner(msg.caller, newOwner);
                     return changeOwnerResult;
                 } else {
@@ -200,12 +198,7 @@ actor class NFT (name: Text, owner: Principal, content: [Nat8]) = this {
             };
             // --- Return Rent(User→System) ---
             case("return rent") {
-                Debug.print("itemStatus : " #debug_show(itemStatus));
-                Debug.print("itemStatus : " #debug_show(nftAdmin));
-                Debug.print("itemStatus : " #debug_show(msg.caller));
-                Debug.print("itemStatus : " #debug_show(newOwner));
-                // Debug.print("itemStatus : " #debug_show(nftOwner));
-                if (itemStatus == #Lending and nftAdmin != msg.caller and nftOwner == msg.caller) {
+                if (itemStatus == #Lending and itemAdmin != msg.caller and itemOwner == msg.caller) {
                     let changeOwnerResult = await changeOwner(msg.caller, newOwner);
                     return changeOwnerResult;
                 } else {
@@ -214,8 +207,8 @@ actor class NFT (name: Text, owner: Principal, content: [Nat8]) = this {
             };
             // --- Withdraw(System→User) ---
             case("withdraw") {
-                if (itemStatus == #Lending and nftAdmin == newOwner and nftOwner == msg.caller) {
-                    let changeOwnerResult = await changeOwner(msg.caller, nftAdmin);
+                if (itemStatus == #Lending and itemAdmin == newOwner and itemOwner == msg.caller) {
+                    let changeOwnerResult = await changeOwner(msg.caller, itemAdmin);
                     if (changeOwnerResult == "Success") {
                         let changeStateResult = await changeState(#Own);
                         return changeStateResult;
